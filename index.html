@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pl" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inteligentny Generator Planu Konsultacji v2.6 (Prestige Design)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .details {
+            font-size: 0.875rem; /* 14px */
+            line-height: 1.6;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem; /* 12px */
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 6px -1px var(--shadow-color-1), 0 2px 4px -2px var(--shadow-color-2);
+            transition: all 0.3s ease-in-out;
+        }
+        :root {
+            --page-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --card-border: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --shadow-color-1: rgba(0, 0, 0, 0.05);
+            --shadow-color-2: rgba(0, 0, 0, 0.04);
+        }
+        html.dark {
+            --page-bg: #030712;
+            --card-bg: #111827;
+            --card-border: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --shadow-color-1: rgba(0, 0, 0, 0.2);
+            --shadow-color-2: rgba(0, 0, 0, 0.15);
+        }
+        @media print {
+            body { background-color: white !important; }
+            .no-print { display: none; }
+            .card { 
+                box-shadow: none !important; 
+                border: 1px solid #e5e7eb !important; 
+                page-break-inside: avoid;
+            }
+            textarea, input { 
+                border: 1px solid #e5e7eb !important; 
+                background-color: #f9fafb !important; 
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-gray-950 text-slate-700 dark:text-slate-300 transition-colors duration-300">
+    <div class="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+        <!-- Nagłówek i przełącznik motywu -->
+        <header class="flex justify-between items-center mb-10 sm:mb-12">
+            <div class="text-left">
+                <h1 class="text-3xl font-extrabold text-slate-800 dark:text-white">Generator Planu</h1>
+                <p class="text-lg text-slate-500 dark:text-slate-400 mt-1">Twoje centrum dowodzenia v2.6</p>
+            </div>
+            <div class="no-print">
+                <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-gray-950 focus:ring-indigo-500 rounded-lg text-sm p-2.5 transition-all duration-200">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 10.607a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM17 17a1 1 0 11-2 0v-1a1 1 0 112 0v1zm-1-9a1 1 0 100-2h-1a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Krok 1: Wprowadzanie danych -->
+            <section id="inputSection" class="card p-6">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white">Krok 1: Wklej dane klienta</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2 mb-4">Otwórz Arkusz Google, skopiuj wiersz z danymi klienta (Ctrl+C) i wklej go poniżej (Ctrl+V).</p>
+                <textarea id="dataInput" class="w-full h-32 p-3 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500" placeholder="Wklej tutaj dane z arkusza..."></textarea>
+                <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                    <button id="generateButton" class="w-full sm:w-auto bg-indigo-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800 transition flex-grow flex items-center justify-center gap-2 shadow-sm hover:shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                        Analizuj i Generuj Plan
+                    </button>
+                    <button id="clearButton" class="w-full sm:w-auto bg-slate-200 text-slate-700 dark:bg-gray-700 dark:text-slate-300 px-5 py-2.5 rounded-lg font-semibold hover:bg-slate-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:focus:ring-gray-600 transition">Wyczyść</button>
+                </div>
+                <p id="errorMessage" class="text-rose-500 mt-2 h-5"></p>
+            </section>
+
+            <!-- Krok 2: Wygenerowany plan konsultacji -->
+            <div id="outputSection" class="hidden space-y-12">
+                <!-- Tutaj zostanie wstrzyknięty dynamicznie wygenerowany plan -->
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Dark Mode Toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        themeToggleLightIcon.classList.remove('hidden');
+        document.documentElement.classList.add('dark');
+    } else {
+        themeToggleDarkIcon.classList.remove('hidden');
+        document.documentElement.classList.remove('dark');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+        if (localStorage.getItem('color-theme')) {
+            if (localStorage.getItem('color-theme') === 'light') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            }
+        } else {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        }
+    });
+
+    // Generator Logic
+    const dataInput = document.getElementById('dataInput');
+    const generateButton = document.getElementById('generateButton');
+    const clearButton = document.getElementById('clearButton');
+    const outputSection = document.getElementById('outputSection');
+    const inputSection = document.getElementById('inputSection');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // BAZA WIEDZY
+    const KNOWLEDGE_BASE = {
+        red_flags: {
+            uraz_operacja: {
+                title: 'HISTORIA URAZU / OPERACJI APARATU RUCHU',
+                questions: `<strong>Co to oznacza i o co pytać?</strong><div class="details"><p>Klient przeszedł poważny uraz lub operację, co może trwale wpływać na jego biomechanikę, zakresy ruchu i siłę. Naszym zadaniem jest zrozumienie obecnych ograniczeń.</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe pytania:</strong></li><li>"Kiedy dokładnie miał miejsce uraz/operacja?"</li><li>"Czy zakończyłeś/aś już pełną rehabilitację pod okiem fizjoterapeuty?"</li><li>"Jakie są Twoje obecne zakresy ruchu w tym stawie w porównaniu do zdrowej strony? Czy odczuwasz sztywność?"</li><li>"Czy istnieją jakieś ruchy lub pozycje, które nadal sprawiają ból lub dyskomfort?"</li><li>"Czy masz jakieś zalecenia od lekarza/fizjo dotyczące tego, czego unikać?"</li></ul></div>`,
+                action: `<strong>Sugerowane działanie:</strong><div class="details"><p>Priorytetem jest test porównawczy zakresów ruchu i siły między stroną operowaną a zdrową. Unikaj ćwiczeń, które prowokują ból w uszkodzonym obszarze. Skup się na ćwiczeniach unilateralnych, aby wyrównywać dysproporcje. W przypadku stawu skokowego, zwróć szczególną uwagę na mobilność (dorsiflexion). W przypadku śrub/płytek, upewnij się, że nie ma dyskomfortu przy bezpośrednim nacisku.</p></div>`
+            },
+            ablacja: {
+                title: 'PRZESZŁA/PRZESZEDŁ ABLACJĘ',
+                questions: `<strong>Co to oznacza i o co pytać?</strong><div class="details"><p>Ablacja to zabieg kardiologiczny. Praca z takim klientem wymaga najwyższej ostrożności i potencjalnie konsultacji z jego lekarzem prowadzącym.</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe pytania:</strong></li><li>"Kiedy dokładnie był zabieg i z jakiego powodu (np. migotanie przedsionków, częstoskurcz)?"</li><li>"Czy masz jakiekolwiek pisemne zalecenia od kardiologa dotyczące wysiłku fizycznego?"</li><li>"Czy masz określone maksymalne strefy tętna, których nie wolno Ci przekraczać?"</li><li>"Jakie objawy (np. kołatanie serca, zawroty głowy, duszności) powinny być dla nas sygnałem do natychmiastowego przerwania treningu?"</li></ul></div>`,
+                action: `<strong>Sugerowane działanie:</strong><div class="details"><p>Priorytetem jest test tętna i nauka klienta skali RPE. Unikaj na początku ćwiczeń o bardzo wysokiej intensywności (HIIT, ciężkie serie do upadku). Rozważ rozpoczęcie od treningu o niższej intensywności i stopniowe jej zwiększanie, monitorując reakcję organizmu.</p></div>`
+            },
+            skolioza: {
+                title: 'PODEJRZENIE/DIAGNOZA SKOLIOZY',
+                questions: `<strong>Co to oznacza i o co pytać?</strong><div class="details"><p>Skolioza to trójpłaszczyznowa deformacja kręgosłupa. Może być strukturalna lub funkcjonalna. Naszym celem nie jest "prostowanie" jej, a budowanie świadomości i siły, by ciało lepiej sobie z nią radziło.</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe pytania:</strong></li><li>"Czy diagnoza została postawiona przez lekarza/fizjoterapeutę? Czy znasz stopień skrzywienia?"</li><li>"Czy odczuwasz z tego powodu ból lub dyskomfort w konkretnych pozycjach/czynnościach?"</li><li>"Czy masz jakieś zalecenia od fizjoterapeuty?"</li></ul></div>`,
+                action: `<strong>Sugerowane działanie:</strong><div class="details"><p>Kluczowe będą ćwiczenia unilateralne (jednostronne), praca nad stabilizacją centralną i oddechem. Test Adamsa jest obowiązkowy. Zwracaj uwagę na wszelkie asymetrie w sile i mobilności.</p></div>`
+            },
+            płaskostopie: {
+                title: 'PODEJRZENIE/DIAGNOZA PŁASKOSTOPIA',
+                questions: `<strong>Co to oznacza i o co pytać?</strong><div class="details"><p>Płaskostopie wpływa na całą kinematykę ruchu, od stopy, przez kolano, aż po biodro i kręgosłup. Może być przyczyną wielu kompensacji.</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe pytania:</strong></li><li>"Czy odczuwasz ból w stopach, łydkach lub kolanach po dłuższym staniu/chodzeniu?"</li><li>"Czy używasz specjalnych wkładek ortopedycznych?"</li></ul></div>`,
+                action: `<strong>Sugerowane działanie:</strong><div class="details"><p>Ocena przysiadu boso jest kluczowa. Warto wprowadzić ćwiczenia aktywujące mięśnie krótkie stopy (np. "short foot exercise") i wzmacniające mięśnie łydki. Zwróć uwagę na tendencję do koślawienia kolan.</p></div>`
+            },
+            ból: {
+                title: 'ZGŁASZA DOLEGLIWOŚCI BÓLOWE',
+                questions: `<strong>Co to oznacza i o co pytać?</strong><div class="details"><p>Ból jest sygnałem, którego nie wolno ignorować. Musimy zrozumieć jego charakter, aby nie pogorszyć stanu klienta.</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe pytania (dla każdej lokalizacji bólu):</strong></li><li>"Gdzie dokładnie boli? Pokaż palcem."</li><li>"W jakiej skali od 1 do 10?"</li><li>"Kiedy się pojawia? (np. rano, po pracy, podczas konkretnego ruchu)"</li><li>"Jaki to rodzaj bólu? (ostry, tępy, piekący, promieniujący)"</li><li>"Co go nasila, a co łagodzi?"</li></ul></div>`,
+                action: `<strong>Sugerowane działanie:</strong><div class="details"><p>Unikaj ćwiczeń, które prowokują ból. Skup się na poprawie wzorców ruchowych i wzmacnianiu mięśni stabilizujących dany staw. Jeśli ból jest ostry lub niepokojący, zalecenie konsultacji z fizjoterapeutą jest obowiązkiem.</p></div>`
+            }
+        },
+        goals: {
+            siła: {
+                title: 'Zwiększenie siły',
+                action: `<strong>Jak to przełożyć na plan?</strong><div class="details"><p>Cel wymaga mierzalnego podejścia. Skupimy się na progresywnym przeciążeniu w kluczowych, wielostawowych ćwiczeniach (przysiady, martwe ciągi, wyciskania, wiosłowania).</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe działania:</strong></li><li>Przeprowadzenie testu siły (np. na 5-8 powtórzeń) w wybranych bojach, aby ustalić ciężary robocze.</li><li>Wprowadzenie dziennika treningowego do monitorowania progresu.</li><li>Periodyzacja treningu (np. falowa, liniowa) w dalszych etapach.</li></ul></div>`
+            },
+            sylwetka: {
+                title: 'Poprawa sylwetki / Rekompozycja',
+                action: `<strong>Jak to przełożyć na plan?</strong><div class="details"><p>To cel łączący trening siłowy z elementami hipertroficznymi. Kluczowe będzie połączenie odpowiedniej objętości treningowej, intensywności i diety.</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe działania:</strong></li><li>Trening całego ciała (FBW) lub podział góra/dół.</li><li>Praca w zakresach powtórzeń 8-15, blisko upadku mięśniowego.</li><li>Zwrócenie uwagi na połączenie nerwowo-mięśniowe ("czucie mięśniowe").</li><li>Podkreślenie roli diety i białka w diecie.</li></ul></div>`
+            },
+            energia: {
+                title: 'Zwiększenie poziomu energii',
+                action: `<strong>Jak to przełożyć na plan?</strong><div class="details"><p>To cel, który wykracza poza sam trening. Musimy spojrzeć na styl życia klienta. Trening ma być bodźcem do adaptacji, a nie kolejnym stresorem.</p><ul class="list-disc list-inside mt-2"><li><strong>Kluczowe działania:</strong></li><li>Zadanie pytań o sen, nawodnienie i stres.</li><li>Wprowadzenie regularnej aktywności o umiarkowanej intensywności.</li><li>Unikanie przetrenowania. Skala RPE będzie tu kluczowa.</li><li>Edukacja na temat regeneracji jako kluczowego elementu zwiększania energii.</li></ul></div>`
+            }
+        },
+        tests: {
+            przysiad: `<strong>Test: Przysiad (Air Squat)</strong><div class="details"><p><strong>Co sprawdzasz?</strong> Fundamentalny wzorzec ruchowy, mobilność i stabilność całego ciała.</p><p class="mt-2"><strong>Na co zwrócić szczególną uwagę:</strong></p><ul class="list-disc list-inside"><li><strong>Stopy:</strong> Czy utrzymują trzy punkty podparcia? Czy łuk stopy się zapada?</li><li><strong>Kolana:</strong> Czy uciekają do środka (koślawość)? Czy śledzą linię stóp?</li><li><strong>Miednica:</strong> Czy zachodzi podwijanie (butt wink)? Czy jest rotacja lub przechylenie na jedną stronę?</li><li><strong>Tułów:</strong> Czy klient jest w stanie utrzymać prosty kręgosłup, czy mocno pochyla się do przodu?</li></ul></div>`,
+            wiosłowanie: `<strong>Test: Wiosłowanie / Przyciąganie</strong><div class="details"><p><strong>Co sprawdzasz?</strong> Wzorzec przyciągania, aktywację mięśni grzbietu, stabilność tułowia.</p><p class="mt-2"><strong>Na co zwrócić szczególną uwagę:</strong></p><ul class="list-disc list-inside"><li><strong>Łopatki:</strong> Czy inicjują ruch? Czy następuje ich retrakcja i depresja? Czy pracują symetrycznie?</li><li><strong>Odcinek lędźwiowy:</strong> Czy jest stabilny, czy dochodzi do przeprostu?</li><li><strong>Barki:</strong> Czy nie wędrują w górę w stronę uszu?</li></ul></div>`,
+            deska: `<strong>Test: Deska (Plank)</strong><div class="details"><p><strong>Co sprawdzasz?</strong> Wytrzymałość i stabilność mięśni głębokich tułowia.</p><p class="mt-2"><strong>Na co zwrócić szczególną uwagę:</strong></p><ul class="list-disc list-inside"><li><strong>Miednica:</strong> Czy jest w neutralnym ustawieniu, czy opada w dół?</li><li><strong>Odcinek piersiowy:</strong> Czy nie zapada się między łopatkami?</li><li><strong>Czas:</strong> Jak długo klient jest w stanie utrzymać nienaganną technikę?</li><li><strong>Oddech:</strong> Czy klient jest w stanie swobodnie oddychać?</li></ul></div>`,
+            adams: `<strong>Sugerowany Test: Ocena postawy / Test Adamsa</strong><div class="details"><p><strong>Co sprawdzasz?</strong> Asymetrię tułowia, potencjalne markery skoliozy.</p><p class="mt-2"><strong>Jak wykonać:</strong> Poproś klienta o wykonanie powolnego skłonu w przód z prostymi kolanami. Obserwuj plecy od tyłu.</p><p class="mt-2"><strong>Na co zwrócić szczególną uwagę:</strong></p><ul class="list-disc list-inside"><li>Czy jedna strona pleców unosi się wyżej od drugiej (tzw. garb żebrowy)?</li><li>Czy linia kręgosłupa jest prosta, czy tworzy łuk?</li></ul></div>`,
+            siła: `<strong>Sugerowany Test: Test Siły</strong><div class="details"><p><strong>Co sprawdzasz?</strong> Aktualny poziom siły w kluczowym ćwiczeniu, co stanowi punkt wyjścia do programowania.</p><p class="mt-2"><strong>Jak wykonać:</strong> Wybierz jedno, bezpieczne ćwiczenie wielostawowe (np. wyciskanie hantli na ławce, Goblet Squat). Po solidnej rozgrzewce, znajdź ciężar, z którym klient może wykonać 5-8 powtórzeń z nienaganną techniką, kończąc serię z uczuciem, że mógłby zrobić jeszcze 1-2 powtórzenia.</p><p class="mt-2"><strong>Co zanotować:</strong> Nazwa ćwiczenia, ciężar, liczba powtórzeń, RPE (ocena odczuwalnego wysiłku).</p></div>`,
+            tętno: `<strong>Sugerowany Test (WAŻNE): Test Tętna</strong><div class="details"><p><strong>Co sprawdzasz?</strong> Reakcję układu krążenia na wysiłek i tempo regeneracji.</p><p class="mt-2"><strong>Jak wykonać:</strong></p><ol class="list-decimal list-inside"><li>Zmierz tętno spoczynkowe (po kilku minutach siedzenia).</li><li>Wykonajcie prosty, 1-minutowy wysiłek o stałej intensywności (np. wchodzenie na stopień, pajacyki).</li><li>Zmierz tętno natychmiast po zakończeniu wysiłku.</li><li>Zmierz tętno ponownie po 1 minucie odpoczynku w siadzie (tzw. recovery rate).</li></ol><p class="mt-2"><strong>Co zanotować:</strong> Tętno spoczynkowe, maksymalne po wysiłku i po 1 minucie. Różnica między tętnem maksymalnym a tym po minucie jest wskaźnikiem regeneracji.</p></div>`
+        }
+    };
+
+
+    const COLUMN_MAP = {
+        NAME: 2, DOB: 3, GOALS: 6,
+        MEDICAL_HISTORY_CHRONIC: 18, MEDICAL_HISTORY_OPERATIONS: 19,
+        MEDICAL_HISTORY_PAIN: 20, MEDICAL_HISTORY_POSTURE: 21,
+        MEDICAL_HISTORY_CONTRAINDICATIONS: 23,
+    };
+
+    function parseData(rawData) {
+        const columns = rawData.split('\t');
+        if (columns.length < 25) {
+            throw new Error("Wklejone dane wydają się niekompletne. Upewnij się, że skopiowano cały wiersz.");
+        }
+        const clientData = {};
+        for (const key in COLUMN_MAP) {
+            clientData[key] = columns[COLUMN_MAP[key]].trim();
+        }
+        return clientData;
+    }
+
+    function analyzeData(data) {
+        const analysis = {
+            redFlags: [],
+            goals: [],
+            suggestedFocus: new Set(),
+        };
+
+        const medicalData = [
+            data.MEDICAL_HISTORY_CHRONIC, data.MEDICAL_HISTORY_OPERATIONS,
+            data.MEDICAL_HISTORY_PAIN, data.MEDICAL_HISTORY_POSTURE,
+            data.MEDICAL_HISTORY_CONTRAINDICATIONS
+        ].join(' ').toLowerCase();
+        
+        const injuryKeywords = ['zerwanie', 'złamanie', 'rekonstrukcja', 'artroskopia', 'śruba', 'płytka', 'zespolenie', 'uraz'];
+        if (injuryKeywords.some(keyword => medicalData.includes(keyword))) {
+             analysis.redFlags.push({ key: 'uraz_operacja', details: data.MEDICAL_HISTORY_OPERATIONS || data.MEDICAL_HISTORY_PAIN });
+        }
+
+        if (medicalData.includes('ablacj')) { analysis.redFlags.push({ key: 'ablacja', details: data.MEDICAL_HISTORY_OPERATIONS }); analysis.suggestedFocus.add('tętno'); }
+        if (medicalData.includes('skolioz')) { analysis.redFlags.push({ key: 'skolioza', details: data.MEDICAL_HISTORY_POSTURE }); analysis.suggestedFocus.add('adams'); }
+        if (medicalData.includes('płaskostop')) { analysis.redFlags.push({ key: 'płaskostopie', details: data.MEDICAL_HISTORY_POSTURE }); }
+        if (medicalData.includes('ból')) { analysis.redFlags.push({ key: 'ból', details: data.MEDICAL_HISTORY_PAIN }); }
+        
+        const goalsData = data.GOALS.toLowerCase();
+        if (goalsData.includes('sił')) { analysis.goals.push('siła'); analysis.suggestedFocus.add('siła'); }
+        if (goalsData.includes('sylwetk') || goalsData.includes('masy') || goalsData.includes('wygląd')) { analysis.goals.push('sylwetka'); }
+        if (goalsData.includes('energi')) { analysis.goals.push('energia'); }
+
+        return analysis;
+    }
+
+    function generateHTML(clientData, analysis) {
+        let redFlagsHTML = analysis.redFlags.length > 0
+            ? [...new Map(analysis.redFlags.map(item => [item.key, item])).values()].map(flag => { // Usunięcie duplikatów
+                const flagData = KNOWLEDGE_BASE.red_flags[flag.key];
+                return `<div class="mb-6"><h4 class="font-semibold text-rose-700 dark:text-rose-400 text-base">${flagData.title}</h4><p class="text-sm text-slate-600 dark:text-slate-400 italic mb-2">Zgłoszenie z ankiety: "${flag.details}"</p>${flagData.questions}${flagData.action}</div>`;
+            }).join('')
+            : '<p>Brak zidentyfikowanych czerwonych flag. Zachowaj czujność podczas wywiadu.</p>';
+
+        let goalsHTML = analysis.goals.length > 0
+            ? [...new Map(analysis.goals.map(item => [item, KNOWLEDGE_BASE.goals[item]])).values()].map(goalData => {
+                 return `<div class="mb-6"><h4 class="font-semibold text-indigo-700 dark:text-indigo-400 text-base">${goalData.title}</h4>${goalData.action}</div>`;
+            }).join('')
+            : '<p>Brak sprecyzowanych celów. Pogłęb wywiad.</p>';
+
+        let testsHTML = `
+            <div class="task-item">${KNOWLEDGE_BASE.tests.przysiad}<textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" placeholder="Notatki z obserwacji..."></textarea></div>
+            <div class="task-item">${KNOWLEDGE_BASE.tests.wiosłowanie}<textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" placeholder="Notatki z obserwacji..."></textarea></div>
+            <div class="task-item">${KNOWLEDGE_BASE.tests.deska}<textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" placeholder="Notatki z obserwacji..."></textarea></div>
+        `;
+        analysis.suggestedFocus.forEach(testKey => {
+            if (KNOWLEDGE_BASE.tests[testKey]) {
+                testsHTML += `<div class="task-item border-t-2 border-dashed border-slate-200 dark:border-gray-700 pt-6 mt-6">${KNOWLEDGE_BASE.tests[testKey]}<textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" placeholder="Notatki z obserwacji..."></textarea></div>`;
+            }
+        });
+        
+        const aiButtonHTML = analysis.redFlags.length > 0 ? `
+            <div class="mt-6">
+                <button id="aiButton" class="no-print w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-800 transition flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v1h-2.5a1 1 0 00-1-1h-2a1 1 0 00-1 1H5V4zM5 7h10v9a2 2 0 01-2 2H7a2 2 0 01-2-2V7z" /></svg>
+                    Zapytaj AI o ten przypadek (Symulacja)
+                </button>
+                <div id="aiResponseContainer" class="hidden mt-4"></div>
+            </div>
+        ` : '';
+
+        const finalHTML = `
+            <section class="card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white">Dane Klienta</h2>
+                    <button id="printButton" class="no-print bg-slate-200 text-slate-700 dark:bg-gray-700 dark:text-slate-300 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300 dark:hover:bg-gray-600 transition">Drukuj / PDF</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <label for="clientName" class="block text-sm font-medium text-slate-600 dark:text-slate-400">Imię i Nazwisko</label>
+                        <input type="text" id="clientName" value="${clientData.NAME}" class="mt-1 block w-full p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="clientDob" class="block text-sm font-medium text-slate-600 dark:text-slate-400">Data Urodzenia</label>
+                        <input type="text" id="clientDob" value="${clientData.DOB}" class="mt-1 block w-full p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card p-6">
+                 <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Wstępne Notatki i Obserwacje</h2>
+                 <textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" rows="5" placeholder="Twoje miejsce na luźne notatki, pierwsze wrażenia, pytania do zadania..."></textarea>
+            </section>
+
+            <section class="card p-6">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Analiza Wstępna</h2>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="red-flag border-rose-500/50 bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/10 p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-rose-900 dark:text-rose-300 mb-4">Czerwone Flagi</h3>
+                        ${redFlagsHTML}
+                        ${aiButtonHTML}
+                    </div>
+                    <div class="goal-highlight border-indigo-500/50 bg-indigo-50 dark:border-indigo-500/30 dark:bg-indigo-500/10 p-4 rounded-lg">
+                         <h3 class="font-bold text-lg text-indigo-900 dark:text-indigo-300 mb-4">Cele Klienta</h3>
+                        ${goalsHTML}
+                    </div>
+                </div>
+            </section>
+
+            <section class="card p-6">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Sugerowane Testy Funkcjonalne</h2>
+                <div class="space-y-6">${testsHTML}</div>
+            </section>
+            
+            <section class="card p-6">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Podsumowanie i Strategia Działania</h2>
+                <textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" rows="6" placeholder="Zanotuj tutaj kluczowe wnioski, 'quick wins' do pokazania klientowi oraz wstępny zarys strategii na pierwszy mezocykl..."></textarea>
+            </section>
+        `;
+        return finalHTML;
+    }
+    
+    function handleAiSimulation(analysis) {
+        const aiButton = document.getElementById('aiButton');
+        if (!aiButton) return;
+        
+        aiButton.addEventListener('click', () => {
+            const container = document.getElementById('aiResponseContainer');
+            aiButton.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>AI analizuje...`;
+            aiButton.disabled = true;
+
+            // Symulacja opóźnienia API
+            setTimeout(() => {
+                const firstFlagKey = analysis.redFlags.length > 0 ? analysis.redFlags.find(f => f.key === 'uraz_operacja')?.key : null;
+                let aiResponse = '';
+
+                if (firstFlagKey === 'uraz_operacja') {
+                    aiResponse = `
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 text-lg">Odpowiedź od AI (Symulacja)</h4>
+                        <div class="details mt-2">
+                            <p>Analizując historię urazu aparatu ruchu, sugeruję następujące, pogłębione działania:</p>
+                            <strong class="block mt-2">Dodatkowe pytania do wywiadu:</strong>
+                            <ul class="list-disc list-inside">
+                                <li>"Jaki był dokładny mechanizm urazu (skręcenie, uderzenie, przeciążenie)?"</li>
+                                <li>"Czy po rehabilitacji występowały epizody 'uciekania' lub niestabilności stawu?"</li>
+                                <li>"Jak uraz wpłynął na Twoje codzienne życie i aktywność? Czy są rzeczy, z których musiałeś/aś zrezygnować?"</li>
+                            </ul>
+                            <strong class="block mt-2">Sugerowane testy specyficzne:</strong>
+                            <ul class="list-disc list-inside">
+                                <li><strong>Test Y-Balance (lub Star Excursion Balance Test):</strong> Do oceny dynamicznej stabilizacji i porównania deficytów między kończynami.</li>
+                                <li><strong>Test zgięcia grzbietowego (Knee-to-Wall):</strong> Kluczowy dla oceny mobilności stawu skokowego, która często jest ograniczona po urazach.</li>
+                                <li><strong>Test siły mięśni strzałkowych:</strong> Ocena siły w oporze, kluczowa dla prewencji ponownych skręceń.</li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                     aiResponse = `<h4 class="font-semibold text-gray-800 dark:text-gray-300 text-lg">Odpowiedź od AI (Symulacja)</h4><div class="details mt-2"><p>Brak specyficznych, zaawansowanych flag do analizy. Skup się na fundamentalnych testach i pogłębionym wywiadzie dotyczącym celów.</p></div>`;
+                }
+                
+                container.innerHTML = `<div class="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">${aiResponse}</div>`;
+                container.classList.remove('hidden');
+                aiButton.style.display = 'none';
+
+            }, 1500);
+        });
+    }
+
+    generateButton.addEventListener('click', () => {
+        const rawData = dataInput.value;
+        if (!rawData) {
+            errorMessage.textContent = "Pole z danymi jest puste.";
+            return;
+        }
+        try {
+            errorMessage.textContent = "";
+            const clientData = parseData(rawData);
+            const analysis = analyzeData(clientData);
+            const planHTML = generateHTML(clientData, analysis);
+            
+            outputSection.innerHTML = planHTML;
+            outputSection.classList.remove('hidden');
+            inputSection.classList.add('hidden');
+
+            document.getElementById('printButton').addEventListener('click', () => window.print());
+            handleAiSimulation(analysis);
+
+        } catch (error) {
+            errorMessage.textContent = error.message;
+            console.error(error);
+        }
+    });
+
+    clearButton.addEventListener('click', () => {
+        dataInput.value = '';
+        outputSection.innerHTML = '';
+        outputSection.classList.add('hidden');
+        inputSection.classList.remove('hidden');
+        errorMessage.textContent = "";
+    });
+});
+</script>
+</body>
+</html>
