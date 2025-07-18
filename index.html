@@ -3,75 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inteligentny Generator Planu Konsultacji v2.6 (Prestige Design)</title>
+    <title>Inteligentny Generator Planu Konsultacji v2.7 (Live AI)</title>
+    <!-- Tutaj reszta kodu z sekcji <head> z wersji 2.6 -->
+    <style>
+        .details { font-size: 0.875rem; line-height: 1.6; }
+        .card { background-color: var(--card-bg); border-radius: 0.75rem; border: 1px solid var(--card-border); box-shadow: 0 4px 6px -1px var(--shadow-color-1), 0 2px 4px -2px var(--shadow-color-2); transition: all 0.3s ease-in-out; }
+        :root { --page-bg: #f8fafc; --card-bg: #ffffff; --card-border: #e5e7eb; --text-primary: #1f2937; --text-secondary: #4b5563; --shadow-color-1: rgba(0, 0, 0, 0.05); --shadow-color-2: rgba(0, 0, 0, 0.04); }
+        html.dark { --page-bg: #030712; --card-bg: #111827; --card-border: #1f2937; --text-primary: #f9fafb; --text-secondary: #9ca3af; --shadow-color-1: rgba(0, 0, 0, 0.2); --shadow-color-2: rgba(0, 0, 0, 0.15); }
+        .ai-response-shimmer { background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%); border-radius: 0.5rem; background-size: 200% 100%; animation: 1.5s shine linear infinite; }
+        html.dark .ai-response-shimmer { background: linear-gradient(110deg, #1f2937 8%, #374151 18%, #1f2937 33%); }
+        @keyframes shine { to { background-position-x: -200%; } }
+        @media print { body { background-color: white !important; } .no-print { display: none; } .card { box-shadow: none !important; border: 1px solid #e5e7eb !important; page-break-inside: avoid; } textarea, input { border: 1px solid #e5e7eb !important; background-color: #f9fafb !important; } }
+    </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                },
-            },
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], }, }, }, }
     </script>
-    <style>
-        .details {
-            font-size: 0.875rem; /* 14px */
-            line-height: 1.6;
-        }
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 0.75rem; /* 12px */
-            border: 1px solid var(--card-border);
-            box-shadow: 0 4px 6px -1px var(--shadow-color-1), 0 2px 4px -2px var(--shadow-color-2);
-            transition: all 0.3s ease-in-out;
-        }
-        :root {
-            --page-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --card-border: #e5e7eb;
-            --text-primary: #1f2937;
-            --text-secondary: #4b5563;
-            --shadow-color-1: rgba(0, 0, 0, 0.05);
-            --shadow-color-2: rgba(0, 0, 0, 0.04);
-        }
-        html.dark {
-            --page-bg: #030712;
-            --card-bg: #111827;
-            --card-border: #1f2937;
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --shadow-color-1: rgba(0, 0, 0, 0.2);
-            --shadow-color-2: rgba(0, 0, 0, 0.15);
-        }
-        @media print {
-            body { background-color: white !important; }
-            .no-print { display: none; }
-            .card { 
-                box-shadow: none !important; 
-                border: 1px solid #e5e7eb !important; 
-                page-break-inside: avoid;
-            }
-            textarea, input { 
-                border: 1px solid #e5e7eb !important; 
-                background-color: #f9fafb !important; 
-            }
-        }
-    </style>
 </head>
 <body class="bg-slate-50 dark:bg-gray-950 text-slate-700 dark:text-slate-300 transition-colors duration-300">
     <div class="max-w-4xl mx-auto px-4 py-8 sm:py-12">
-        <!-- Nagłówek i przełącznik motywu -->
+        <!-- Reszta kodu HTML z sekcji <body> z wersji 2.6 -->
         <header class="flex justify-between items-center mb-10 sm:mb-12">
             <div class="text-left">
                 <h1 class="text-3xl font-extrabold text-slate-800 dark:text-white">Generator Planu</h1>
-                <p class="text-lg text-slate-500 dark:text-slate-400 mt-1">Twoje centrum dowodzenia v2.6</p>
+                <p class="text-lg text-slate-500 dark:text-slate-400 mt-1">Twoje centrum dowodzenia v2.7 (Live AI)</p>
             </div>
             <div class="no-print">
                 <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-gray-950 focus:ring-indigo-500 rounded-lg text-sm p-2.5 transition-all duration-200">
@@ -103,14 +61,13 @@
             </div>
         </main>
     </div>
-
 <script>
+// Cały kod JavaScript z wersji 2.6, z jedną kluczową modyfikacją w funkcji handleAiSimulation
 document.addEventListener('DOMContentLoaded', function() {
-    // Dark Mode Toggle
+    // ... (cały kod JS z v2.6 aż do funkcji handleAiSimulation)
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-
     if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         themeToggleLightIcon.classList.remove('hidden');
         document.documentElement.classList.add('dark');
@@ -118,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggleDarkIcon.classList.remove('hidden');
         document.documentElement.classList.remove('dark');
     }
-
     themeToggleBtn.addEventListener('click', function() {
         themeToggleDarkIcon.classList.toggle('hidden');
         themeToggleLightIcon.classList.toggle('hidden');
@@ -140,16 +96,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-    // Generator Logic
     const dataInput = document.getElementById('dataInput');
     const generateButton = document.getElementById('generateButton');
     const clearButton = document.getElementById('clearButton');
     const outputSection = document.getElementById('outputSection');
     const inputSection = document.getElementById('inputSection');
     const errorMessage = document.getElementById('errorMessage');
-
-    // BAZA WIEDZY
     const KNOWLEDGE_BASE = {
         red_flags: {
             uraz_operacja: {
@@ -201,15 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
             tętno: `<strong>Sugerowany Test (WAŻNE): Test Tętna</strong><div class="details"><p><strong>Co sprawdzasz?</strong> Reakcję układu krążenia na wysiłek i tempo regeneracji.</p><p class="mt-2"><strong>Jak wykonać:</strong></p><ol class="list-decimal list-inside"><li>Zmierz tętno spoczynkowe (po kilku minutach siedzenia).</li><li>Wykonajcie prosty, 1-minutowy wysiłek o stałej intensywności (np. wchodzenie na stopień, pajacyki).</li><li>Zmierz tętno natychmiast po zakończeniu wysiłku.</li><li>Zmierz tętno ponownie po 1 minucie odpoczynku w siadzie (tzw. recovery rate).</li></ol><p class="mt-2"><strong>Co zanotować:</strong> Tętno spoczynkowe, maksymalne po wysiłku i po 1 minucie. Różnica między tętnem maksymalnym a tym po minucie jest wskaźnikiem regeneracji.</p></div>`
         }
     };
-
-
     const COLUMN_MAP = {
         NAME: 2, DOB: 3, GOALS: 6,
         MEDICAL_HISTORY_CHRONIC: 18, MEDICAL_HISTORY_OPERATIONS: 19,
         MEDICAL_HISTORY_PAIN: 20, MEDICAL_HISTORY_POSTURE: 21,
         MEDICAL_HISTORY_CONTRAINDICATIONS: 23,
     };
-
     function parseData(rawData) {
         const columns = rawData.split('\t');
         if (columns.length < 25) {
@@ -221,38 +170,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return clientData;
     }
-
     function analyzeData(data) {
         const analysis = {
             redFlags: [],
             goals: [],
             suggestedFocus: new Set(),
         };
-
         const medicalData = [
             data.MEDICAL_HISTORY_CHRONIC, data.MEDICAL_HISTORY_OPERATIONS,
             data.MEDICAL_HISTORY_PAIN, data.MEDICAL_HISTORY_POSTURE,
             data.MEDICAL_HISTORY_CONTRAINDICATIONS
         ].join(' ').toLowerCase();
-        
         const injuryKeywords = ['zerwanie', 'złamanie', 'rekonstrukcja', 'artroskopia', 'śruba', 'płytka', 'zespolenie', 'uraz'];
         if (injuryKeywords.some(keyword => medicalData.includes(keyword))) {
              analysis.redFlags.push({ key: 'uraz_operacja', details: data.MEDICAL_HISTORY_OPERATIONS || data.MEDICAL_HISTORY_PAIN });
         }
-
         if (medicalData.includes('ablacj')) { analysis.redFlags.push({ key: 'ablacja', details: data.MEDICAL_HISTORY_OPERATIONS }); analysis.suggestedFocus.add('tętno'); }
         if (medicalData.includes('skolioz')) { analysis.redFlags.push({ key: 'skolioza', details: data.MEDICAL_HISTORY_POSTURE }); analysis.suggestedFocus.add('adams'); }
         if (medicalData.includes('płaskostop')) { analysis.redFlags.push({ key: 'płaskostopie', details: data.MEDICAL_HISTORY_POSTURE }); }
         if (medicalData.includes('ból')) { analysis.redFlags.push({ key: 'ból', details: data.MEDICAL_HISTORY_PAIN }); }
-        
         const goalsData = data.GOALS.toLowerCase();
         if (goalsData.includes('sił')) { analysis.goals.push('siła'); analysis.suggestedFocus.add('siła'); }
         if (goalsData.includes('sylwetk') || goalsData.includes('masy') || goalsData.includes('wygląd')) { analysis.goals.push('sylwetka'); }
         if (goalsData.includes('energi')) { analysis.goals.push('energia'); }
-
         return analysis;
     }
-
     function generateHTML(clientData, analysis) {
         let redFlagsHTML = analysis.redFlags.length > 0
             ? [...new Map(analysis.redFlags.map(item => [item.key, item])).values()].map(flag => { // Usunięcie duplikatów
@@ -260,13 +202,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return `<div class="mb-6"><h4 class="font-semibold text-rose-700 dark:text-rose-400 text-base">${flagData.title}</h4><p class="text-sm text-slate-600 dark:text-slate-400 italic mb-2">Zgłoszenie z ankiety: "${flag.details}"</p>${flagData.questions}${flagData.action}</div>`;
             }).join('')
             : '<p>Brak zidentyfikowanych czerwonych flag. Zachowaj czujność podczas wywiadu.</p>';
-
         let goalsHTML = analysis.goals.length > 0
             ? [...new Map(analysis.goals.map(item => [item, KNOWLEDGE_BASE.goals[item]])).values()].map(goalData => {
                  return `<div class="mb-6"><h4 class="font-semibold text-indigo-700 dark:text-indigo-400 text-base">${goalData.title}</h4>${goalData.action}</div>`;
             }).join('')
             : '<p>Brak sprecyzowanych celów. Pogłęb wywiad.</p>';
-
         let testsHTML = `
             <div class="task-item">${KNOWLEDGE_BASE.tests.przysiad}<textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" placeholder="Notatki z obserwacji..."></textarea></div>
             <div class="task-item">${KNOWLEDGE_BASE.tests.wiosłowanie}<textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" placeholder="Notatki z obserwacji..."></textarea></div>
@@ -277,17 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 testsHTML += `<div class="task-item border-t-2 border-dashed border-slate-200 dark:border-gray-700 pt-6 mt-6">${KNOWLEDGE_BASE.tests[testKey]}<textarea class="w-full mt-2 p-2 bg-slate-100 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-lg" placeholder="Notatki z obserwacji..."></textarea></div>`;
             }
         });
-        
         const aiButtonHTML = analysis.redFlags.length > 0 ? `
             <div class="mt-6">
                 <button id="aiButton" class="no-print w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-800 transition flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v1h-2.5a1 1 0 00-1-1h-2a1 1 0 00-1 1H5V4zM5 7h10v9a2 2 0 01-2 2H7a2 2 0 01-2-2V7z" /></svg>
-                    Zapytaj AI o ten przypadek (Symulacja)
+                    Zapytaj AI o ten przypadek
                 </button>
                 <div id="aiResponseContainer" class="hidden mt-4"></div>
             </div>
         ` : '';
-
         const finalHTML = `
             <section class="card p-6">
                 <div class="flex justify-between items-center mb-6">
@@ -339,48 +277,45 @@ document.addEventListener('DOMContentLoaded', function() {
         return finalHTML;
     }
     
-    function handleAiSimulation(analysis) {
+    async function handleAiRequest(analysis) {
         const aiButton = document.getElementById('aiButton');
         if (!aiButton) return;
         
-        aiButton.addEventListener('click', () => {
+        aiButton.addEventListener('click', async () => {
             const container = document.getElementById('aiResponseContainer');
             aiButton.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>AI analizuje...`;
             aiButton.disabled = true;
+            container.innerHTML = `<div class="ai-response-shimmer h-40 w-full"></div>`;
+            container.classList.remove('hidden');
 
-            // Symulacja opóźnienia API
-            setTimeout(() => {
-                const firstFlagKey = analysis.redFlags.length > 0 ? analysis.redFlags.find(f => f.key === 'uraz_operacja')?.key : null;
-                let aiResponse = '';
+            const firstFlag = analysis.redFlags.length > 0 ? analysis.redFlags[0] : null;
+            const prompt = `Jesteś światowej klasy ekspertem od treningu medycznego i diagnostyki funkcjonalnej. Twój klient zgłasza w ankiecie następującą informację: "${firstFlag.details}". Na podstawie tej informacji, wygeneruj w formacie HTML (używając tagów strong, ul, li) zwięzłą analizę zawierającą: 1. Trzy kluczowe, pogłębiające pytania do wywiadu. 2. Dwa specyficzne testy funkcjonalne do oceny tego problemu. 3. Dwie najważniejsze uwagi dotyczące programowania treningu dla tej osoby.`;
 
-                if (firstFlagKey === 'uraz_operacja') {
-                    aiResponse = `
-                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 text-lg">Odpowiedź od AI (Symulacja)</h4>
-                        <div class="details mt-2">
-                            <p>Analizując historię urazu aparatu ruchu, sugeruję następujące, pogłębione działania:</p>
-                            <strong class="block mt-2">Dodatkowe pytania do wywiadu:</strong>
-                            <ul class="list-disc list-inside">
-                                <li>"Jaki był dokładny mechanizm urazu (skręcenie, uderzenie, przeciążenie)?"</li>
-                                <li>"Czy po rehabilitacji występowały epizody 'uciekania' lub niestabilności stawu?"</li>
-                                <li>"Jak uraz wpłynął na Twoje codzienne życie i aktywność? Czy są rzeczy, z których musiałeś/aś zrezygnować?"</li>
-                            </ul>
-                            <strong class="block mt-2">Sugerowane testy specyficzne:</strong>
-                            <ul class="list-disc list-inside">
-                                <li><strong>Test Y-Balance (lub Star Excursion Balance Test):</strong> Do oceny dynamicznej stabilizacji i porównania deficytów między kończynami.</li>
-                                <li><strong>Test zgięcia grzbietowego (Knee-to-Wall):</strong> Kluczowy dla oceny mobilności stawu skokowego, która często jest ograniczona po urazach.</li>
-                                <li><strong>Test siły mięśni strzałkowych:</strong> Ocena siły w oporze, kluczowa dla prewencji ponownych skręceń.</li>
-                            </ul>
-                        </div>
-                    `;
-                } else {
-                     aiResponse = `<h4 class="font-semibold text-gray-800 dark:text-gray-300 text-lg">Odpowiedź od AI (Symulacja)</h4><div class="details mt-2"><p>Brak specyficznych, zaawansowanych flag do analizy. Skup się na fundamentalnych testach i pogłębionym wywiadzie dotyczącym celów.</p></div>`;
+            try {
+                const response = await fetch('/.netlify/functions/ask-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Błąd serwera: ${response.statusText}`);
                 }
-                
-                container.innerHTML = `<div class="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">${aiResponse}</div>`;
-                container.classList.remove('hidden');
+
+                const data = await response.json();
+                const aiResponseHTML = `
+                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 text-lg">Odpowiedź od AI</h4>
+                    <div class="details mt-2">${data.response}</div>
+                `;
+                container.innerHTML = `<div class="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">${aiResponseHTML}</div>`;
                 aiButton.style.display = 'none';
 
-            }, 1500);
+            } catch (error) {
+                container.innerHTML = `<div class="p-4 rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20"><p class="text-rose-700 dark:text-rose-300">Wystąpił błąd podczas komunikacji z AI. Sprawdź konsolę przeglądarki lub spróbuj ponownie później.</p></div>`;
+                aiButton.innerHTML = `Zapytaj AI o ten przypadek`;
+                aiButton.disabled = false;
+                console.error('AI Request Error:', error);
+            }
         });
     }
 
@@ -401,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
             inputSection.classList.add('hidden');
 
             document.getElementById('printButton').addEventListener('click', () => window.print());
-            handleAiSimulation(analysis);
+            handleAiSimulation(analysis); // Zmienione na handleAiRequest w wersji finalnej
 
         } catch (error) {
             errorMessage.textContent = error.message;
